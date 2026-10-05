@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% block title %}{{ report_title }} · Reports{% endblock %}
+{% block page_title %}Reports{% endblock %}
+{% block content %}
+<div class="report-layout">
+    <nav class="report-nav">
+        {% for key, label in titles.items() %}
+        <a class="{% if report == key %}active{% endif %}" href="{{ url_for('reports', type=key) }}">{{ label }}</a>
+        {% endfor %}
+    </nav>
+    <section class="panel">
+        <div class="panel-head">
+            <h2>{{ report_title }}</h2>
+            <span class="muted">{{ rows|length }} record{% if rows|length != 1 %}s{% endif %}</span>
+        </div>
+        {% if rows %}
+        <div class="table-wrap">
+            {% if report in ['all_books', 'available_books'] %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Book</th><th>Author</th><th>Publisher</th><th>Category</th>
+                        <th>Quantity</th><th>Available</th><th>Issued</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>{{ row.book_id }}</td>
+                        <td>{{ row.book_name }}</td>
+                        <td>{{ row.author }}</td>
+                        <td>{{ row.publisher }}</td>
+                        <td>{{ row.category }}</td>
+                        <td>{{ row.quantity }}</td>
+                        <td>{{ row.available_quantity }}</td>
+                        <td>{{ row.quantity - row.available_quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% elif report == 'issued_books' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Issue ID</th><th>Book</th><th>Author</th><th>Student</th>
+                        <th>Issue date</th><th>Due date</th><th>Fine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>#{{ row.issue_id }}</td>
+                        <td>{{ row.book_name }}</td>
+                        <td>{{ row.author }}</td>
+                        <td>{{ row.student_name }}</td>
+                        <td>{{ row.issue_date }}</td>
+                        <td>{{ row.due_date }}</td>
+                        <td>₹{{ row.fine|money }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% elif report == 'overdue_books' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Issue ID</th><th>Book</th><th>Student</th><th>Phone</th>
+                        <th>Issue date</th><th>Due date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>#{{ row.issue_id }}</td>
+                        <td>{{ row.book_name }}</td>
+                        <td>{{ row.student_name }}</td>
+                        <td>{{ row.phone }}</td>
+                        <td>{{ row.issue_date }}</td>
+                        <td>{{ row.due_date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% elif report == 'students' %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Name</th><th>Class / Department</th><th>Phone</th><th>Email</th>
+                        <th>Address</th><th>Membership</th><th>Period</th><th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>{{ row.student_id }}</td>
+                        <td>{{ row.student_name }}</td>
+                        <td>{{ row.class_department }}</td>
+                        <td>{{ row.phone }}</td>
+                        <td>{{ row.email }}</td>
+                        <td>{{ row.address }}</td>
+                        <td>{{ row.membership_type }}</td>
+                        <td>{{ row.membership_start }} to {{ row.membership_end }}</td>
+                        <td>{{ row.membership_status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Issue ID</th><th>Book</th><th>Student</th>
+                        <th>Issue date</th><th>Due date</th><th>Return date</th><th>Fine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>#{{ row.issue_id }}</td>
+                        <td>{{ row.book_name }}</td>
+                        <td>{{ row.student_name }}</td>
+                        <td>{{ row.issue_date }}</td>
+                        <td>{{ row.due_date }}</td>
+                        <td>{{ row.return_date or "—" }}</td>
+                        <td>₹{{ row.fine|money }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+        {% else %}
+        <p class="empty">No records for this report.</p>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

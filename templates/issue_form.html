@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Issue book · Library{% endblock %}
+{% block page_title %}Issue book{% endblock %}
+{% block content %}
+<section class="panel form-panel">
+    {% if errors %}
+    <div class="alert error">
+        <ul>{% for error in errors %}<li>{{ error }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+    {% if not students or not books %}
+    <div class="alert error">
+        {% if not students %}<p>Add a student before issuing a book.</p>{% endif %}
+        {% if not books %}<p>Add a book with available copies before issuing.</p>{% endif %}
+    </div>
+    {% endif %}
+    <form method="post" class="form-grid">
+        <label>Student
+            <select name="student_id" required>
+                <option value="">Select student</option>
+                {% for student in students %}
+                <option value="{{ student.student_id }}" {% if form.student_id == student.student_id|string %}selected{% endif %}>
+                    {{ student.student_name }} · {{ student.class_department }} (ID {{ student.student_id }})
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Book
+            <select name="book_id" required>
+                <option value="">Select available book</option>
+                {% for book in books %}
+                <option value="{{ book.book_id }}" {% if form.book_id == book.book_id|string %}selected{% endif %}>
+                    {{ book.book_name }} · {{ book.author }} ({{ book.available_quantity }} available)
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Issue date
+            <input type="date" name="issue_date" value="{{ form.issue_date }}" required>
+        </label>
+        <label>Due date
+            <input type="date" name="due_date" value="{{ form.due_date }}" required>
+        </label>
+        <div class="form-actions">
+            <button class="btn" type="submit" {% if not students or not books %}disabled{% endif %}>Issue book</button>
+            <a class="btn btn-ghost" href="{{ url_for('issues') }}">Cancel</a>
+        </div>
+    </form>
+    <p class="muted">Issuing decreases the available quantity by one. A book with no copies left cannot be issued.</p>
+</section>
+{% endblock %}

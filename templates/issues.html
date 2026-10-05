@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Issues · Library{% endblock %}
+{% block page_title %}Issue records{% endblock %}
+{% block content %}
+<div class="toolbar">
+    <form class="search" method="get" action="{{ url_for('issues') }}">
+        <input type="search" name="q" value="{{ q }}" placeholder="Search by book, student, or issue ID">
+        <button class="btn" type="submit">Search</button>
+        {% if q %}<a class="btn btn-ghost" href="{{ url_for('issues') }}">Clear</a>{% endif %}
+    </form>
+    <div class="actions">
+        <a class="btn btn-ghost" href="{{ url_for('return_books') }}">Return book</a>
+        <a class="btn" href="{{ url_for('issue_book') }}">Issue book</a>
+    </div>
+</div>
+<section class="panel">
+    {% if issues %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book</th>
+                    <th>Student</th>
+                    <th>Issue date</th>
+                    <th>Due date</th>
+                    <th>Return date</th>
+                    <th>Fine</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in issues %}
+                <tr>
+                    <td>#{{ item.issue_id }}</td>
+                    <td>{{ item.book_name }}</td>
+                    <td>{{ item.student_name }}</td>
+                    <td>{{ item.issue_date }}</td>
+                    <td>{{ item.due_date }}</td>
+                    <td>{{ item.return_date or "—" }}</td>
+                    <td>₹{{ item.fine|money }}</td>
+                    <td>
+                        {% if item.return_date %}
+                        <span class="badge ok">Returned</span>
+                        {% elif item.due_date < today %}
+                        <span class="badge bad">Overdue</span>
+                        {% else %}
+                        <span class="badge warn">Issued</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">{% if q %}No records match “{{ q }}”.{% else %}No books have been issued yet.{% endif %}</p>
+    {% endif %}
+</section>
+{% endblock %}

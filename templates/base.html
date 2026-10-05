@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Management System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-fine-per-day="{{ fine_per_day }}">
+    {% if session.admin_id %}
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <span class="brand-mark">LMS</span>
+                <div>
+                    <strong>Library</strong>
+                    <small>Management</small>
+                </div>
+            </div>
+            <nav>
+                <a class="{% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">Dashboard</a>
+                <a class="{% if request.path.startswith('/books') %}active{% endif %}" href="{{ url_for('books') }}">Books</a>
+                <a class="{% if request.path.startswith('/students') %}active{% endif %}" href="{{ url_for('students') }}">Students</a>
+                <a class="{% if request.path == '/issues' or request.path.startswith('/issues/issue') %}active{% endif %}" href="{{ url_for('issues') }}">Issues</a>
+                <a class="{% if request.path.startswith('/issues/return') %}active{% endif %}" href="{{ url_for('return_books') }}">Return Book</a>
+                <a class="{% if request.path.startswith('/fines') %}active{% endif %}" href="{{ url_for('fines') }}">Fines</a>
+                <a class="{% if request.path.startswith('/reports') %}active{% endif %}" href="{{ url_for('reports') }}">Reports</a>
+            </nav>
+        </aside>
+        <div class="main">
+            <header class="topbar">
+                <button class="nav-toggle" type="button" id="nav-toggle" aria-label="Open menu">Menu</button>
+                <h1>{% block page_title %}Dashboard{% endblock %}</h1>
+                <div class="topbar-user">
+                    <span>{{ session.username }}</span>
+                    <a class="btn btn-small" href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </header>
+            <div class="content">
+                {% include "flashes.html" %}
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+        {% include "flashes.html" %}
+        {% block auth %}{% endblock %}
+    {% endif %}
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

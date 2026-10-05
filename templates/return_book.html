@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Return book · Library{% endblock %}
+{% block page_title %}Return book{% endblock %}
+{% block content %}
+<section class="panel">
+    <p class="muted">Late returns are charged ₹{{ fine_per_day|money }} for each day after the due date. The fine is saved on the issue record.</p>
+    {% if issues %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book</th>
+                    <th>Student</th>
+                    <th>Issue date</th>
+                    <th>Due date</th>
+                    <th>Return date</th>
+                    <th>Estimated fine</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in issues %}
+                <tr>
+                    <td>#{{ item.issue_id }}</td>
+                    <td>{{ item.book_name }}</td>
+                    <td>{{ item.student_name }}</td>
+                    <td>{{ item.issue_date }}</td>
+                    <td>{{ item.due_date }}</td>
+                    <td>
+                        <input form="return-{{ item.issue_id }}" type="date" name="return_date" value="{{ today.isoformat() }}" min="{{ item.issue_date.isoformat() }}" data-due="{{ item.due_date.isoformat() }}" data-fine-preview="fine-{{ item.issue_id }}" required>
+                    </td>
+                    <td id="fine-{{ item.issue_id }}">₹{{ item.estimated_fine|money }}</td>
+                    <td>
+                        <form id="return-{{ item.issue_id }}" method="post" action="{{ url_for('return_book', issue_id=item.issue_id) }}" data-confirm="Return {{ item.book_name }}?">
+                            <button class="btn btn-small" type="submit">Return</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">No books are currently issued.</p>
+    {% endif %}
+</section>
+{% endblock %}

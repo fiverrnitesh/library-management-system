@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ student.student_name }} · Library{% endblock %}
+{% block page_title %}Student details{% endblock %}
+{% block content %}
+<section class="panel">
+    <div class="panel-head">
+        <h2>{{ student.student_name }}</h2>
+        <div class="actions">
+            <a class="btn btn-small" href="{{ url_for('edit_student', student_id=student.student_id) }}">Edit</a>
+            <a class="btn btn-small btn-ghost" href="{{ url_for('students') }}">Back</a>
+        </div>
+    </div>
+    <dl class="detail-grid">
+        <div><dt>Student ID</dt><dd>{{ student.student_id }}</dd></div>
+        <div><dt>Class / Department</dt><dd>{{ student.class_department }}</dd></div>
+        <div><dt>Phone</dt><dd>{{ student.phone }}</dd></div>
+        <div><dt>Email</dt><dd>{{ student.email }}</dd></div>
+        <div><dt>Address</dt><dd>{{ student.address }}</dd></div>
+        <div><dt>Membership</dt><dd>{{ student.membership_type }} · {{ student.membership_status }}</dd></div>
+        <div><dt>Membership period</dt><dd>{{ student.membership_start }} to {{ student.membership_end }}</dd></div>
+    </dl>
+</section>
+<section class="panel">
+    <div class="panel-head"><h2>Issue history</h2></div>
+    {% if history %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book</th>
+                    <th>Issue date</th>
+                    <th>Due date</th>
+                    <th>Return date</th>
+                    <th>Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in history %}
+                <tr>
+                    <td>#{{ item.issue_id }}</td>
+                    <td>{{ item.book_name }}</td>
+                    <td>{{ item.issue_date }}</td>
+                    <td>{{ item.due_date }}</td>
+                    <td>{{ item.return_date or "—" }}</td>
+                    <td>₹{{ item.fine|money }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">No books issued to this student yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

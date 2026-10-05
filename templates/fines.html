@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Fines · Library{% endblock %}
+{% block page_title %}Fines{% endblock %}
+{% block content %}
+<section class="cards cards-compact">
+    <article class="card">
+        <span>Collected fines</span>
+        <strong>₹{{ total_fines|money }}</strong>
+        <small>Rate: ₹{{ fine_per_day|money }} per day after the due date</small>
+    </article>
+</section>
+
+<section class="panel">
+    <div class="panel-head"><h2>Recorded fines</h2></div>
+    {% if collected %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book</th>
+                    <th>Student</th>
+                    <th>Due date</th>
+                    <th>Return date</th>
+                    <th>Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in collected %}
+                <tr>
+                    <td>#{{ item.issue_id }}</td>
+                    <td>{{ item.book_name }}</td>
+                    <td>{{ item.student_name }}</td>
+                    <td>{{ item.due_date }}</td>
+                    <td>{{ item.return_date }}</td>
+                    <td>₹{{ item.fine|money }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">No fines have been recorded yet.</p>
+    {% endif %}
+</section>
+
+<section class="panel">
+    <div class="panel-head"><h2>Open overdue issues</h2></div>
+    <p class="muted">These amounts are estimates until the book is returned. The fine is stored when the return is saved.</p>
+    {% if overdue %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book</th>
+                    <th>Student</th>
+                    <th>Due date</th>
+                    <th>Estimated fine today</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in overdue %}
+                <tr>
+                    <td>#{{ item.issue_id }}</td>
+                    <td>{{ item.book_name }}</td>
+                    <td>{{ item.student_name }}</td>
+                    <td>{{ item.due_date }}</td>
+                    <td>₹{{ item.estimated_fine|money }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">No overdue books.</p>
+    {% endif %}
+</section>
+{% endblock %}

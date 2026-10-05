@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Students · Library{% endblock %}
+{% block page_title %}Students / Members{% endblock %}
+{% block content %}
+<div class="toolbar">
+    <form class="search" method="get" action="{{ url_for('students') }}">
+        <input type="search" name="q" value="{{ q }}" placeholder="Search by name, department, phone, email, or ID">
+        <button class="btn" type="submit">Search</button>
+        {% if q %}<a class="btn btn-ghost" href="{{ url_for('students') }}">Clear</a>{% endif %}
+    </form>
+    <a class="btn" href="{{ url_for('add_student') }}">Add student</a>
+</div>
+<section class="panel">
+    {% if students %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Class / Department</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Membership</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.student_id }}</td>
+                    <td>{{ student.student_name }}</td>
+                    <td>{{ student.class_department }}</td>
+                    <td>{{ student.phone }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.membership_type }}</td>
+                    <td>
+                        {% if student.membership_status == 'Active' %}
+                        <span class="badge ok">Active</span>
+                        {% else %}
+                        <span class="badge bad">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td class="actions">
+                        <a class="btn btn-small btn-ghost" href="{{ url_for('student_detail', student_id=student.student_id) }}">View</a>
+                        <a class="btn btn-small btn-ghost" href="{{ url_for('edit_student', student_id=student.student_id) }}">Edit</a>
+                        <form method="post" action="{{ url_for('delete_student', student_id=student.student_id) }}" data-confirm="Delete {{ student.student_name }}?">
+                            <button class="btn btn-small btn-danger" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">{% if q %}No students match “{{ q }}”.{% else %}No students yet.{% endif %}</p>
+    {% endif %}
+</section>
+{% endblock %}

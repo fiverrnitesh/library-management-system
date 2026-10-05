@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database setup · Library Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<main class="login-page">
+    <section class="login-card">
+        <p class="eyebrow">Setup needed</p>
+        <h1>Database is not ready</h1>
+        <p>MySQL is not running, or the library database has not been created. From the project folder:</p>
+        <pre class="code">mysql -u root -p &lt; database/schema.sql</pre>
+        <p class="muted">Set <code>DB_HOST</code>, <code>DB_USER</code>, <code>DB_PASSWORD</code>, and <code>DB_NAME</code> in <code>.env</code> if your MySQL login is different. See README.md.</p>
+        <a class="btn" href="{{ url_for('login') }}">Try again</a>
+    </section>
+</main>
+</body>
+</html>

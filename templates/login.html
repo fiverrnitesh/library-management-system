@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Login · Library Management System{% endblock %}
+{% block auth %}
+<main class="login-page">
+    <form class="login-card" method="post" action="{{ url_for('login') }}">
+        <p class="eyebrow">College Library</p>
+        <h1>Sign in</h1>
+        <p class="muted">Librarian access for books, members, issues, and fines.</p>
+        {% if error %}
+        <div class="alert error">{{ error }}</div>
+        {% endif %}
+        <label>
+            Username
+            <input type="text" name="username" autocomplete="username" required autofocus>
+        </label>
+        <label>
+            Password
+            <input type="password" name="password" autocomplete="current-password" required>
+        </label>
+        <button class="btn" type="submit">Login</button>
+    </form>
+</main>
+{% endblock %}

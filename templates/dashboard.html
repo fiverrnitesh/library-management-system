@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Library{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<section class="cards">
+    <a class="card" href="{{ url_for('books') }}">
+        <span>Total Books</span>
+        <strong>{{ stats.total_books }}</strong>
+        <small>{{ stats.titles }} titles</small>
+    </a>
+    <a class="card" href="{{ url_for('reports', type='available_books') }}">
+        <span>Available Books</span>
+        <strong>{{ stats.available_books }}</strong>
+        <small>Copies on shelf</small>
+    </a>
+    <a class="card" href="{{ url_for('reports', type='issued_books') }}">
+        <span>Issued Books</span>
+        <strong>{{ stats.issued_books }}</strong>
+        <small>Copies currently out</small>
+    </a>
+    <a class="card" href="{{ url_for('students') }}">
+        <span>Students / Members</span>
+        <strong>{{ stats.total_students }}</strong>
+        <small>Registered members</small>
+    </a>
+    <a class="card" href="{{ url_for('issues') }}">
+        <span>Active / Overdue</span>
+        <strong>{{ stats.active_issues }}</strong>
+        <small>{{ stats.overdue_issues }} overdue</small>
+    </a>
+    <a class="card" href="{{ url_for('fines') }}">
+        <span>Total Fines</span>
+        <strong>₹{{ stats.total_fines|money }}</strong>
+        <small>₹{{ fine_per_day|money }} per late day</small>
+    </a>
+</section>
+
+<section class="panel">
+    <div class="panel-head">
+        <h2>Recent activity</h2>
+        <a href="{{ url_for('issues') }}">View all issues</a>
+    </div>
+    {% if activity %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Record</th>
+                    <th>Book</th>
+                    <th>Student</th>
+                    <th>Issue date</th>
+                    <th>Due date</th>
+                    <th>Status</th>
+                    <th>Fine</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in activity %}
+                <tr>
+                    <td>#{{ item.issue_id }}</td>
+                    <td>{{ item.book_name }}</td>
+                    <td>{{ item.student_name }}</td>
+                    <td>{{ item.issue_date }}</td>
+                    <td>{{ item.due_date }}</td>
+                    <td>
+                        {% if item.return_date %}
+                        <span class="badge ok">Returned {{ item.return_date }}</span>
+                        {% elif item.due_date < today %}
+                        <span class="badge bad">Overdue</span>
+                        {% else %}
+                        <span class="badge warn">Issued</span>
+                        {% endif %}
+                    </td>
+                    <td>₹{{ item.fine|money }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty">No issue activity yet. Add a book and a student, then issue a book.</p>
+    {% endif %}
+</section>
+{% endblock %}
